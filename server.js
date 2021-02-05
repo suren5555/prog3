@@ -1,8 +1,8 @@
-let express = require('express');
-let app = express();
-let server = require('http').Server(app);
-let io = require('socket.io')(server);
-let fs = require("fs");
+var express = require('express');
+var app = express();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+var fs = require("fs");
 
 app.use(express.static("."));
 
@@ -11,14 +11,14 @@ app.get('/', function (req, res) {
 });
 server.listen(3000);
  
-let matrix = []; // Մատրիցի ստեղծում
-let rows = 50; // Տողերի քանակ
-let columns = 50; // Սյուների քանակ
+ matrix = []; // Մատրիցի ստեղծում
+var rows = 50; // Տողերի քանակ
+var columns = 50; // Սյուների քանակ
 
-for (let y = 0; y < rows; y++) {
+for (var y = 0; y < rows; y++) {
 matrix[y] = []; // Մատրիցի նոր տողի ստեղծում
-for (let x = 0; x < columns; x++) {
-let a = Math.floor(Math.random()*100);
+for (var x = 0; x < columns; x++) {
+var a = Math.floor(Math.random()*100);
 if (a >= 0 && a < 20) {
 matrix[y][x] = 0; // Մատրիցի 20 տոկոսը կլինի 0
 } 
@@ -38,15 +38,15 @@ else if(a >= 99 && a < 100) {
 matrix[y][x] = 5; // Մատրիցի 10 տոկոսը կլինի 5
 } 
 }
-}
- 
-io.sockets.emit('send matrix', matrix)
+console.log(matrix)
 
-let grassArr = [];
- let grasseaterArr = [];
- let gishoArr = [];
- let vzgoArr = [];
- let gazanArr = [];
+}
+
+ grassArr = [];
+  grasseaterArr = [];
+  gishoArr = [];
+  vzgoArr = [];
+  gazanArr = [];
 
 	Grass = require("./Grass")
 	GrassEater = require("./GrassEater")
@@ -55,52 +55,61 @@ let grassArr = [];
 	Gazan = require("./Gazan")
 
 function createObjects(matrix){
-	for (let y = 0; y < matrix.length; y++) {
-        for (let x = 0; x < matrix[y].length; x++) {
+	for (var y = 0; y < matrix.length; y++) {
+        for (var x = 0; x < matrix[y].length; x++) {
             if(matrix[y][x]==1){
-                let grass = new Grass(x,y);
+                var grass = new Grass(x,y);
                 grassArr.push(grass)
             }
             else if(matrix[y][x]==2){
-                let eatgrass = new Grasseater(x,y)
+                var eatgrass = new GrassEater(x,y)
                 grasseaterArr.push(eatgrass);
             }
             else if(matrix[y][x]==3){
-                let gisho = new Gisho(x,y)
+                var gisho = new Gisho(x,y)
                 gishoArr.push(gisho);
             }
             else if(matrix[y][x]==4){
-                let vz = new Vzgo(x,y)
+                var vz = new Vzgo(x,y)
                 vzgoArr.push(vz);
             }
             else if(matrix[y][x]==5){
-                let gazan = new Gazan(x,y)
+                var gazan = new Gazan(x,y)
                 gazanArr.push(gazan);
             }
         } 
-        io.sockets.emit('send matrix', matrix)  
+        
     }
 }
 function game() {
-	for (let i in grassArr) {
+	for (var i in grassArr) {
         grassArr[i].mul()
     }
-    for (let i in grasseaterArr){
+    for (var i in grasseaterArr){
         grasseaterArr[i].eat()
     }
-    for (let i in gishoArr){
+    for (var i in gishoArr){
         gishoArr[i].eat()
     }
-    for (let i in vzgoArr){
+    for (var i in vzgoArr){
         vzgoArr[i].eat()
     }
-    for (let p in gazanArr){
+    for (var p in gazanArr){
         gazanArr[p].eat();
     }
-    io.sockets.emit("send matrix", matrix);
+    let sendData = {
+        matrix: matrix
+    }
+    console.log(matrix)
+    io.sockets.emit("data", sendData);
 }
 setInterval(game, 1000)
 
 io.on('connection', function (socket) {
-    createObject(matrix)
+    createObjects(matrix)
+
+    socket.on('lightningEvent', function () {
+		console.log('lightning event');
+		// ավելացնել լոգիկան թե մատրիցայում ինչ է տեղի ունենում կայծակի ժամանակ
+	});
 })

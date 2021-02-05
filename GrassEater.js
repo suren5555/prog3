@@ -1,4 +1,5 @@
-let LivingCreature = require('./LivingCreature')
+var LivingCreature = require('./LivingCreature')
+var random = require('./random')
 
 module.exports = class Grasseater extends LivingCreature{
     constructor(x, y,index) {
@@ -17,16 +18,16 @@ module.exports = class Grasseater extends LivingCreature{
             [this.x + 1, this.y + 1]
         ];
     }
-    getDirections(t) {
+    chooseCell(character) {
         this.newDirections();
-        return super.getDirections(t);
+        return super.chooseCell(character);
     }
     move() {
-        let foundcords = this.getDirections(0);
-        let cord = random(foundcords);
+        var foundcords = this.chooseCell(0);
+        var cord = random(foundcords);
         if (cord) {
-            let x = cord[0];
-            let y = cord[1];
+            var x = cord[0];
+            var y = cord[1];
             matrix[y][x] = 2;
             matrix[this.y][this.x] = 0;
             this.x = x;
@@ -34,16 +35,16 @@ module.exports = class Grasseater extends LivingCreature{
         }
     }
     mul() {
-        let fundCords = this.getDirections(0);
-        let cord = random(fundCords);
+        var fundCords = this.chooseCell(0);
+        var cord = random(fundCords);
 
         if (cord) {
-            let x = cord[0];
-            let y = cord[1];
+            var x = cord[0];
+            var y = cord[1];
 
             this.multiply++;
 
-            let norXotaker = new Grasseater(x, y);
+            var norXotaker = new GrassEater(x, y);
             grasseaterArr.push(norXotaker);
 
             matrix[y][x] = 2;
@@ -52,15 +53,15 @@ module.exports = class Grasseater extends LivingCreature{
     }
     die() {
         matrix[this.y][this.x] = 0;
-        for (let i in grasseaterArr) {
+        for (var i in grasseaterArr) {
             if (this.x == grasseaterArr[i].x && this.y == grasseaterArr[i].y) {
                 grasseaterArr.splice(i, 1);
             }
         }
     }
     eat() {
-        let fundCords = this.getDirections(1);
-        let cord = random(fundCords);
+        var fundCords = this.chooseCell(1);
+        var cord = random(fundCords);
         if (cord) {
             var x = cord[0];
             var y = cord[1];
@@ -74,7 +75,7 @@ module.exports = class Grasseater extends LivingCreature{
             this.multiply++;
 
             this.energy++;
-            for (let i in grasseaterArr) {
+            for (var i in grasseaterArr) {
                 if (x == grasseaterArr[i].x && y == grasseaterArr[i].y) {
                     grassArr.splice(i, 1);
                 }

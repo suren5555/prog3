@@ -1,43 +1,54 @@
-let socket = io();
+var socket = io();
+socket.on("data", draw)
+var side = 20;
+var n = 50
+var m = 50
+var matrix = []
 
-let side = 10;    
+function setup() {
 
- function setup() {
     frameRate(5);
-    createCanvas(matrix[0].length * side, matrix.length * side);
+    createCanvas(n * side, m * side);
     background('#acacac');
- 
- function nkarel(matrix) {
+}
+function draw(data) {
+    
+    matrix = data.matrix;
     console.log(matrix);
-    for (let y = 0; y < matrix.length; y++) {
-        for (let x = 0; x < matrix[y].length; x++) {
-            let obj = matrix[x][y];
+    for (var y = 0; y < matrix.length; y++) {
+        for (var x = 0; x < matrix[y].length; x++) {
+            var obj = matrix[x][y];
             if (obj == 1) {
                 fill("green")
+                rect(x*side, y*side,side,side)
             }
             else if (obj == 0) {
                 fill("#acacac")
+                rect(x*side, y*side,side,side)
             }
-            else if (obj == 2){
+            else if (obj == 2) {
                 fill("yellow")
+                rect(x*side, y*side,side,side)
             }
-            else if (obj == 3){
+            else if (obj == 3) {
                 fill("red")
+                rect(x*side, y*side,side,side)
             }
-            else if (obj == 4){
+            else if (obj == 4) {
                 fill("black")
+                rect(x*side, y*side,side,side)
             }
-            else if (obj == 5){
+            else if (obj == 5) {
                 fill("pink")
+                rect(x*side, y*side,side,side)
             }
-            rect(x*side,y*side,side,side)
+            
         }
     }
 }
 
-    setInterval(
-        function () {
-        socket.on('send matrix', nkarel)
-        },1000
-    )
-}
+
+
+function lightningEvent() {
+    socket.emit('lightningEvent');
+}   

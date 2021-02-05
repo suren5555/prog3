@@ -1,4 +1,5 @@
 let LivingCreature = require('./LivingCreature')
+var random = require('./random')
 
 module.exports = class Gazan extends LivingCreature{
     constructor(x, y) {
