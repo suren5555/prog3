@@ -1,8 +1,10 @@
-var express = require('express');
+var express = require('express'); 
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var fs = require("fs");
+
+var random = require('./random');
 
 app.use(express.static("."));
 
@@ -11,7 +13,25 @@ app.get('/', function (req, res) {
 });
 server.listen(3000);
  
- matrix = []; // Մատրիցի ստեղծում
+io.on('connection', function (socket) {
+    createObjects(matrix);
+    console.log('a user connected');
+    socket.on('lightningEvent', function () {
+        function getRandomInt(min, max) {
+          min = Math.ceil(min);
+          max = Math.floor(max);
+          return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
+        }
+        let tiv1 = getRandomInt(0,50);
+        console.log("tiv1");
+    });
+    socket.on('someEvent', function () {
+        console.log('some event happened on server');
+        // ավելացնել լոգիկան թե մատրիցայում ինչ է տեղի ունենում ինչ որ իրադարձության ժամանակ    
+    });
+});
+
+matrix = []; // Մատրիցի ստեղծում
 var rows = 50; // Տողերի քանակ
 var columns = 50; // Սյուների քանակ
 
@@ -38,43 +58,41 @@ else if(a >= 99 && a < 100) {
 matrix[y][x] = 5; // Մատրիցի 10 տոկոսը կլինի 5
 } 
 }
-console.log(matrix)
-
 }
 
- grassArr = [];
+  grassArr = [];
   grasseaterArr = [];
   gishoArr = [];
   vzgoArr = [];
   gazanArr = [];
 
-	Grass = require("./Grass")
-	GrassEater = require("./GrassEater")
-	Gisho = require("./Gisho")
-	Vzgo = require("./Vzgo")
-	Gazan = require("./Gazan")
+	Grass = require("./Grass");
+	GrassEater = require("./GrassEater");
+	Gisho = require("./Gisho");
+	Vzgo = require("./Vzgo");
+	Gazan = require("./Gazan");
 
 function createObjects(matrix){
 	for (var y = 0; y < matrix.length; y++) {
         for (var x = 0; x < matrix[y].length; x++) {
             if(matrix[y][x]==1){
                 var grass = new Grass(x,y);
-                grassArr.push(grass)
+                grassArr.push(grass);
             }
             else if(matrix[y][x]==2){
-                var eatgrass = new GrassEater(x,y)
+                var eatgrass = new GrassEater(x,y);
                 grasseaterArr.push(eatgrass);
             }
             else if(matrix[y][x]==3){
-                var gisho = new Gisho(x,y)
+                var gisho = new Gisho(x,y);
                 gishoArr.push(gisho);
             }
             else if(matrix[y][x]==4){
-                var vz = new Vzgo(x,y)
+                var vz = new Vzgo(x,y);
                 vzgoArr.push(vz);
             }
             else if(matrix[y][x]==5){
-                var gazan = new Gazan(x,y)
+                var gazan = new Gazan(x,y);
                 gazanArr.push(gazan);
             }
         } 
@@ -83,33 +101,27 @@ function createObjects(matrix){
 }
 function game() {
 	for (var i in grassArr) {
-        grassArr[i].mul()
+        grassArr[i].mul();
     }
     for (var i in grasseaterArr){
-        grasseaterArr[i].eat()
+        grasseaterArr[i].eat();
     }
     for (var i in gishoArr){
-        gishoArr[i].eat()
+        gishoArr[i].eat();
     }
     for (var i in vzgoArr){
-        vzgoArr[i].eat()
+        vzgoArr[i].eat();
     }
     for (var p in gazanArr){
         gazanArr[p].eat();
     }
     let sendData = {
-        matrix: matrix
+        "matrix": matrix
     }
-    console.log(matrix)
+    console.log(matrix);
     io.sockets.emit("data", sendData);
 }
-setInterval(game, 1000)
-
-io.on('connection', function (socket) {
-    createObjects(matrix)
-
-    socket.on('lightningEvent', function () {
-		console.log('lightning event');
-		// ավելացնել լոգիկան թե մատրիցայում ինչ է տեղի ունենում կայծակի ժամանակ
-	});
-})
+for (var i = 0; i >= 1; i++) {
+    if (i=0) {setInterval(game, 1000);}
+    else if (i=1) {setInterval(game, 2000);}
+}

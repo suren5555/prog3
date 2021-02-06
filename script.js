@@ -1,20 +1,19 @@
+var side = 20;
 var socket = io();
 socket.on("data", draw)
-var side = 20;
 var n = 50
 var m = 50
 var matrix = []
 
 function setup() {
 
-    frameRate(5);
+    frameRate(1);
     createCanvas(n * side, m * side);
     background('#acacac');
 }
 function draw(data) {
     
     matrix = data.matrix;
-    console.log(matrix);
     for (var y = 0; y < matrix.length; y++) {
         for (var x = 0; x < matrix[y].length; x++) {
             var obj = matrix[x][y];
@@ -47,8 +46,10 @@ function draw(data) {
     }
 }
 
-
-
 function lightningEvent() {
     socket.emit('lightningEvent');
-}   
+} 
+function someEvent() {
+    // Ասել socket-ին որ տեղի ունեցավ someEvent իրադարձությունը
+    socket.emit('someEvent');
+}  
