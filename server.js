@@ -23,11 +23,21 @@ io.on('connection', function (socket) {
           return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
         }
         let tiv1 = getRandomInt(0,50);
-        console.log("tiv1");
+        for (let i = 0; i < 50; i++) {
+            matrix[tiv1][i]=0
+        }    
     });
     socket.on('someEvent', function () {
         console.log('some event happened on server');
-        // ավելացնել լոգիկան թե մատրիցայում ինչ է տեղի ունենում ինչ որ իրադարձության ժամանակ    
+        function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
+          }
+          let tiv = getRandomInt(0,50);
+          for (let i = 0; i < 50; i++) {
+              matrix[i][tiv]=0
+          }        
     });
 });
 
@@ -118,10 +128,16 @@ function game() {
     let sendData = {
         "matrix": matrix
     }
-    console.log(matrix);
     io.sockets.emit("data", sendData);
 }
-for (var i = 0; i >= 1; i++) {
-    if (i=0) {setInterval(game, 1000);}
-    else if (i=1) {setInterval(game, 2000);}
+let aragutyun = 1000;
+function exanakpoxox(aragutyun) {
+    if (aragutyun==2000) {
+        aragutyun=1000
+    }
+    else {
+        aragutyun=2000
+    }
 }
+setInterval(exanakpoxox,3000);
+setInterval(game, aragutyun);
